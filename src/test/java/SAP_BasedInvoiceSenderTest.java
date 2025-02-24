@@ -1,9 +1,6 @@
 
 //package org.example;
-import org.example.Assignment.FilterInvoice;
-import org.example.Assignment.Invoice;
-import org.example.Assignment.SAP;
-import org.example.Assignment.SAP_BasedInvoiceSender;
+import org.example.Assignment.*;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,6 +50,25 @@ import java.util.List;
             for (Invoice invoice : mockLowValuedInvoices) {
                 verify(mockSap).send(invoice);
             }
+        }
+
+        @Test
+        void testThrowExceptionWhenBadInvoice() {
+            // works because the invoice that's passed in is a bad value (-5) which then
+            // throws the exception.
+            FilterInvoice mockFilter = mock(FilterInvoice.class);
+            SAP mockSap = mock(SAP.class);
+
+            Invoice invoice;
+            List<Invoice> mockLowValuedInvoices = List.of(
+                    invoice = new Invoice("4", -5)
+            );
+            when(mockFilter.lowValueInvoices()).thenReturn(mockLowValuedInvoices);
+
+            SAP_BasedInvoiceSender invoiceSender = new SAP_BasedInvoiceSender(mockFilter, mockSap);
+            invoiceSender.sendLowValuedInvoices();
+
+            doThrow(new FailToSendSAPInvoiceException("SAP invoice failed.")).when(mockSap).send(invoice);
         }
     }
 
