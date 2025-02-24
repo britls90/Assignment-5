@@ -30,4 +30,5 @@ public class FilterInvoice {
                     .filter(invoice -> invoice.getValue() < 100)
                     .collect(toList());
     }
+
 }
