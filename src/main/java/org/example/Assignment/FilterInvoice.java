@@ -11,10 +11,10 @@ public class FilterInvoice {
     // We want to stub the dao to avoid interacting with database, however it is hard to do so, since dao is initialized internally
     // we need some way to inject dependency which is a stub, so we don't interact with database explicitly
     // we want it to depend on concretion, but only an abstraction.
-    public FilterInvoice() {
+    public FilterInvoice(Database db) {
         // this class doesn't need db, only dao needs it... there is a tight coupling
         // this is called dependency instantiation not injection
-        this.db = new Database();
+        this.db = db;
         this.dao = new QueryInvoicesDAO(db);
     }
     public List<Invoice> lowValueInvoices() {
